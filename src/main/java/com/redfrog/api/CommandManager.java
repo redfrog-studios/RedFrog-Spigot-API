@@ -2,6 +2,7 @@ package com.redfrog.api;
 
 import com.redfrog.api.command.CommandExecutor;
 import com.redfrog.api.command.CommandExecutorComparator;
+import com.redfrog.api.command.OnlyPlayerCommand;
 import com.redfrog.api.command.presets.CommandHelpListHandler;
 import com.redfrog.api.utils.CC;
 import org.bukkit.command.Command;
@@ -10,6 +11,7 @@ import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -277,6 +279,15 @@ class CommandManager implements org.bukkit.command.CommandExecutor, TabCompleter
                     params[i] = args;
                 else
                     params[i] = null;
+            }
+
+            if (!(sender instanceof Player)) {
+                for (Annotation annotation : executor.getMethod().getDeclaredAnnotations()) {
+                    if (annotation instanceof OnlyPlayerCommand) {
+                        sender.sendMessage(CC.RED + "This command can only be executed by a player.");
+                        return CommandResult.SUCCESS;
+                    }
+                }
             }
 
             if (executor.getMethod().getReturnType().equals(boolean.class)) {
