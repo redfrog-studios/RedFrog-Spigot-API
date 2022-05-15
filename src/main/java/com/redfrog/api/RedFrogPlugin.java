@@ -85,6 +85,9 @@ public class RedFrogPlugin extends JavaPlugin implements CommandClass {
             }
         };
         runnable.runTaskLater(this, 1);
+
+        saveDefaultConfig();
+        reloadConfig();
     }
 
 
