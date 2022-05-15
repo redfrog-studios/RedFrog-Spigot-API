@@ -1,0 +1,5 @@
+name: RedFrogAPI
+main: com.redfrog.api.RedFrogPlugin
+version: ${project.version}
+author: RedFrog Studios
+softdepend: [PlaceholderAPI]
