@@ -1,9 +1,12 @@
 package com.redfrog.api.inventory.presets;
 
+import com.redfrog.api.utils.CC;
+import com.redfrog.api.utils.ItemBuilder;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import com.redfrog.api.pattern.buffering.PatternBuffer;
 import com.redfrog.api.inventory.InventorySlotClickData;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.List;
 
@@ -15,6 +18,9 @@ public class PaginatedInventory extends BackableInventory {
     private List<ItemStack> items;
     private ItemStack emptySlotItem;
 
+    private ItemStack previousItem;
+    private ItemStack nextItem;
+
     int prevPageSlot;
     int nextPageSlot;
     int curPage;
@@ -24,9 +30,46 @@ public class PaginatedInventory extends BackableInventory {
     protected void init() {
         super.init();
 
+        enableBackButton(false);
+
         curPage = 0;
         prevPageSlot = CustomInventory.getSlot(0, 5, 9);
         nextPageSlot = CustomInventory.getSlot(8, 5, 9);
+
+        previousItem = new ItemStack(Material.ARROW);
+        {
+            ItemMeta itemMeta = previousItem.getItemMeta();
+            itemMeta.setDisplayName(CC.format("&ePrevious"));
+            previousItem.setItemMeta(itemMeta);
+        }
+
+        nextItem = new ItemStack(Material.ARROW);
+        {
+            ItemMeta itemMeta = previousItem.getItemMeta();
+            itemMeta.setDisplayName(CC.format("&eNext"));
+            previousItem.setItemMeta(itemMeta);
+        }
+    }
+
+
+    public void setPrevPageSlot(int slot) {
+        prevPageSlot = slot;
+    }
+
+
+    public void setNextPageSlot(int slot) {
+        nextPageSlot = slot;
+    }
+
+
+
+    public void setPrevPageItem(ItemStack item) {
+        previousItem = item;
+    }
+
+
+    public void setNextPageItem(ItemStack item) {
+        nextItem = item;
     }
 
 
@@ -73,7 +116,7 @@ public class PaginatedInventory extends BackableInventory {
 
     private void showPreviousBtn(boolean visible) {
         if (visible)
-            setItem(prevPageSlot, Material.ARROW, "&ePrevious");
+            setItem(prevPageSlot, previousItem);
         else
             removeItem(prevPageSlot);
     }
@@ -81,7 +124,7 @@ public class PaginatedInventory extends BackableInventory {
 
     private void showNextBtn(boolean visible) {
         if (visible)
-            setItem(nextPageSlot, Material.ARROW, "&eNext");
+            setItem(nextPageSlot, nextItem);
         else
             removeItem(nextPageSlot);
     }
@@ -107,10 +150,16 @@ public class PaginatedInventory extends BackableInventory {
     }
 
 
+    @Override
+    public CustomInventory onReplace(CustomInventory preset) {
+        super.onReplace(preset);
+        refresh();
+        return this;
+    }
+
     private void drawBackground() {
         if (backgroundBuffer == null)
             return;
-        ;
 
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
@@ -123,7 +172,7 @@ public class PaginatedInventory extends BackableInventory {
 
     private void updatePage() {
 
-        clear();
+        //clear();
 
         drawBackground();
 

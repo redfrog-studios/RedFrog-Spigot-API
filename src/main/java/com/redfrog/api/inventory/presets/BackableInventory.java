@@ -1,5 +1,7 @@
 package com.redfrog.api.inventory.presets;
 
+import com.redfrog.api.utils.CC;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -15,23 +17,34 @@ public class BackableInventory extends BasicInventory {
 
     private CustomInventory previousPreset;
 
+    private boolean showBackButton;
+
+
+    public void enableBackButton(boolean enable) {
+        showBackButton = enable;
+    }
+
 
     @Override
     protected void init() {
         super.init();
 
+        showBackButton = false;
+
         backItemSlot = CustomInventory.getSlot(4, 5, width);
         backItem = new ItemStack(Material.BOOK);
         ItemMeta meta = backItem.getItemMeta();
 
-        meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&eBack"));
+        meta.setDisplayName(CC.format("&eBack"));
         backItem.setItemMeta(meta);
     }
 
 
     @Override
     public BasicInventory refresh() {
-        setItem(backItemSlot, backItem);
+
+        if (showBackButton)
+            setItem(backItemSlot, backItem);
 
         return super.refresh();
     }
@@ -53,6 +66,8 @@ public class BackableInventory extends BasicInventory {
 
     @Override
     public boolean onSlotClick(InventorySlotClickData data) {
+        if (!showBackButton)
+            return super.onSlotClick(data);
 
         if (data.getSlot() == backItemSlot) {
             if (previousPreset != null) {
