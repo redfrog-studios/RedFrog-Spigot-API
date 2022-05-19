@@ -21,6 +21,9 @@ public class PaginatedInventory extends BackableInventory {
     private ItemStack previousItem;
     private ItemStack nextItem;
 
+    private ItemStack previousItemBackground;
+    private ItemStack nextItemBackground;
+
     int prevPageSlot;
     int nextPageSlot;
     int curPage;
@@ -62,7 +65,6 @@ public class PaginatedInventory extends BackableInventory {
     }
 
 
-
     public void setPrevPageItem(ItemStack item) {
         previousItem = item;
     }
@@ -70,6 +72,16 @@ public class PaginatedInventory extends BackableInventory {
 
     public void setNextPageItem(ItemStack item) {
         nextItem = item;
+    }
+
+
+    public void setPrevPageBackground(ItemStack item) {
+        previousItemBackground = item;
+    }
+
+
+    public void setNextPageBackground(ItemStack item) {
+        nextItemBackground = item;
     }
 
 
@@ -117,6 +129,8 @@ public class PaginatedInventory extends BackableInventory {
     private void showPreviousBtn(boolean visible) {
         if (visible)
             setItem(prevPageSlot, previousItem);
+        else if (previousItemBackground != null)
+            setItem(prevPageSlot, previousItemBackground);
         else
             removeItem(prevPageSlot);
     }
@@ -125,6 +139,8 @@ public class PaginatedInventory extends BackableInventory {
     private void showNextBtn(boolean visible) {
         if (visible)
             setItem(nextPageSlot, nextItem);
+        else if (nextItemBackground != null)
+            setItem(nextPageSlot, nextItemBackground);
         else
             removeItem(nextPageSlot);
     }
